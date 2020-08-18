@@ -10,22 +10,11 @@
       @close="onClose"
     >
       <el-row :gutter="15">
-        <el-form
-          ref="elForm"
-          :model="formData"
-          :rules="rules"
-          size="medium"
-          label-width="100px"
-        >
+        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px">
           <el-col :span="24">
             <el-form-item label="生成类型" prop="type">
               <el-radio-group v-model="formData.type">
-                <el-radio-button
-                  v-for="(item, index) in typeOptions"
-                  :key="index"
-                  :label="item.value"
-                  :disabled="item.disabled"
-                >
+                <el-radio-button v-for="(item, index) in typeOptions" :key="index" :label="item.value" :disabled="item.disabled">
                   {{ item.label }}
                 </el-radio-button>
               </el-radio-group>
@@ -56,31 +45,37 @@ export default {
     return {
       formData: {
         fileName: undefined,
-        type: 'file'
+        type: 'file',
       },
       rules: {
-        fileName: [{
-          required: true,
-          message: '请输入文件名',
-          trigger: 'blur'
-        }],
-        type: [{
-          required: true,
-          message: '生成类型不能为空',
-          trigger: 'change'
-        }]
+        fileName: [
+          {
+            required: true,
+            message: '请输入文件名',
+            trigger: 'blur',
+          },
+        ],
+        type: [
+          {
+            required: true,
+            message: '生成类型不能为空',
+            trigger: 'change',
+          },
+        ],
       },
-      typeOptions: [{
-        label: '页面',
-        value: 'file'
-      }, {
-        label: '弹窗',
-        value: 'dialog'
-      }]
+      typeOptions: [
+        {
+          label: '页面',
+          value: 'file',
+        },
+        {
+          label: '弹窗',
+          value: 'dialog',
+        },
+      ],
     }
   },
-  computed: {
-  },
+  computed: {},
   watch: {},
   mounted() {},
   methods: {
@@ -89,22 +84,20 @@ export default {
         this.formData.fileName = `${+new Date()}.vue`
       }
     },
-    onClose() {
-    },
+    onClose() {},
     close(e) {
       this.$emit('update:visible', false)
     },
     handelConfirm() {
-      this.$refs.elForm.validate(valid => {
+      this.$refs.elForm.validate((valid) => {
         if (!valid) return
         this.$emit('confirm', { ...this.formData })
         this.close()
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-
 </style>

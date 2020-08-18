@@ -75,6 +75,8 @@
                 @activeItem="activeFormItem"
                 @copyItem="drawingItemCopy"
                 @deleteItem="drawingItemDelete"
+                @editHtmlItem="drawingItemEditHtml"
+                @transformHtmlItem="drawingItemTransformHtml"
               />
             </draggable>
             <div v-show="!drawingList.length" class="empty-info">
@@ -89,7 +91,13 @@
 
     <form-drawer :visible.sync="drawerVisible" :form-data="formData" size="100%" :generate-conf="generateConf" />
     <json-drawer size="60%" :visible.sync="jsonDrawerVisible" :json-str="JSON.stringify(formData)" @refresh="refreshJson" />
-    <code-type-dialog :visible.sync="dialogVisible" title="选择生成类型" :show-file-name="showFileName" @confirm="generate" />
+    <code-type-dialog :visible.sync="dialog.codeType.visible" title="选择生成类型" :show-file-name="showFileName" @confirm="generate" />
+    <!-- <add-html-dialog
+      :visible.sync="dialog.addCode.visible"
+      :title="dialog.addCode.title"
+      :show-file-name="showFileName"
+      @confirm="generate"
+    /> -->
     <input id="copyNode" type="hidden" />
   </div>
 </template>
@@ -99,7 +107,6 @@ import draggable from 'vuedraggable'
 import { debounce } from 'throttle-debounce'
 import { saveAs } from 'file-saver'
 import ClipboardJS from 'clipboard'
-import render from '@/components/render/render'
 import FormDrawer from './FormDrawer'
 import JsonDrawer from './JsonDrawer'
 import RightPanel from './RightPanel'
@@ -111,7 +118,8 @@ import { makeUpCss } from '@/components/generator/css'
 import drawingDefalut from '@/components/generator/drawingDefalut'
 import logo from '@/assets/logo.png'
 import CodeTypeDialog from './CodeTypeDialog'
-import DraggableItem from './DraggableItem'
+// import AddHtmlDialog from './components/AddHtmlDialog'
+import DraggableItem from './components/DraggableItem'
 import { getDrawingList, saveDrawingList, getIdGlobal, saveIdGlobal, getFormConf } from '@/utils/db'
 import loadBeautifier from '@/utils/loadBeautifier'
 
@@ -130,6 +138,7 @@ export default {
     JsonDrawer,
     RightPanel,
     CodeTypeDialog,
+    // AddHtmlDialog,
     DraggableItem,
   },
   data() {
@@ -146,7 +155,16 @@ export default {
       activeId: drawingDefalut[0].formId,
       drawerVisible: false,
       formData: {},
-      dialogVisible: false,
+      dialog: {
+        codeType: {
+          visible: false,
+        },
+        addCode: {
+          visible: false,
+          type: '',
+          title: '',
+        },
+      },
       jsonDrawerVisible: false,
       generateConf: null,
       showFileName: false,
@@ -171,12 +189,12 @@ export default {
   },
   computed: {},
   watch: {
-    // eslint-disable-next-line func-names
     'activeData.__config__.label': function (val, oldVal) {
+      // TODD 这个每次刷新页面都会更新placeholder
       if (this.activeData.placeholder === undefined || !this.activeData.__config__.tag || oldActiveId !== this.activeId) {
         return
       }
-      this.activeData.placeholder = this.activeData.placeholder.replace(oldVal, '') + val
+      this.activeData.placeholder = this.activeData.placeholder.replace(oldVal, val)
     },
     activeId: {
       handler(val) {
@@ -211,22 +229,26 @@ export default {
     loadBeautifier((btf) => {
       beautifier = btf
     })
-    const clipboard = new ClipboardJS('#copyNode', {
-      text: (trigger) => {
-        const codeStr = this.generateCode()
-        this.$notify({
-          title: '成功',
-          message: '代码已复制到剪切板，可粘贴。',
-          type: 'success',
-        })
-        return codeStr
-      },
-    })
-    clipboard.on('error', (e) => {
-      this.$message.error('代码复制失败')
-    })
+    this.initClipboard()
   },
   methods: {
+    initClipboard() {
+      const clipboard = new ClipboardJS('#copyNode', {
+        text: (trigger) => {
+          const codeStr = this.generateCode()
+          this.$notify({
+            title: '成功',
+            message: '代码已复制到剪切板，可粘贴。',
+            type: 'success',
+          })
+          return codeStr
+        },
+      })
+      clipboard.on('error', (e) => {
+        this.$message.error('代码复制失败')
+      })
+    },
+
     activeFormItem(currentItem) {
       this.activeData = currentItem
       this.activeId = currentItem.__config__.formId
@@ -239,19 +261,22 @@ export default {
     },
     addComponent(item) {
       const clone = this.cloneComponent(item)
-      this.drawingList.push(clone)
-      this.activeFormItem(clone)
+
+      if (clone) {
+        this.drawingList.push(clone)
+        this.activeFormItem(clone)
+      }
     },
     cloneComponent(origin) {
       const clone = deepClone(origin)
-      if (clone.type === 'html') {
-        return this.handlerHtml()
-      }
-
       const config = clone.__config__
       config.span = this.formConf.span // 生成代码时，会根据span做精简判断
       this.createIdAndKey(clone)
-      clone.placeholder !== undefined && (clone.placeholder += config.label)
+      if (clone.placeholderOrigin) {
+        clone.placeholder = clone.placeholderOrigin
+      } else {
+        clone.placeholder !== undefined && (clone.placeholder += config.label)
+      }
       tempActiveData = clone
       return tempActiveData
     },
@@ -271,7 +296,6 @@ export default {
       }
       return item
     },
-    handlerHtml() {},
     AssembleFormData() {
       this.formData = {
         fields: deepClone(this.drawingList),
@@ -329,17 +353,17 @@ export default {
       this.jsonDrawerVisible = true
     },
     download() {
-      this.dialogVisible = true
+      this.dialog.codeType.visible = true
       this.showFileName = true
       this.operationType = 'download'
     },
     run() {
-      this.dialogVisible = true
+      this.dialog.codeType.visible = true
       this.showFileName = false
       this.operationType = 'run'
     },
     copy() {
-      this.dialogVisible = true
+      this.dialog.codeType.visible = true
       this.showFileName = false
       this.operationType = 'copy'
     },
@@ -377,6 +401,22 @@ export default {
       this.drawingList = deepClone(data.fields)
       delete data.fields
       this.formConf = data
+    },
+
+    showAddDialog(type, config) {
+      this.dialog.addCode.type = type
+      this.dialog.addCode.visible = true
+    },
+    /* 富文本HTML */
+    addHtml() {
+      this.dialog.addCode.title = '添加富文本HTML'
+      this.showAddDialog('html')
+    },
+    drawingItemEditHtml(item, list) {
+      item.htmlEditing = true
+    },
+    drawingItemTransformHtml(item, list) {
+      item.htmlEditing = false
     },
   },
 }

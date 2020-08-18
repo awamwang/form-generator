@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { loadScriptQueue } from '@/utils/loadScript'
 import Tinymce from '@/components/tinymce/index.vue'
 
-Vue.component('tinymce', Tinymce)
+Vue.component('richText', Tinymce)
 
 const $previewApp = document.getElementById('previewApp')
 const childAttrs = {
@@ -14,7 +14,7 @@ window.addEventListener('message', init, false)
 
 function buildLinks(links) {
   let strs = ''
-  links.forEach(url => {
+  links.forEach((url) => {
     strs += `<link href="${url}" rel="stylesheet">`
   })
   return strs

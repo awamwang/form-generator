@@ -134,7 +134,7 @@ export const inputComponents = [
       showLabel: true,
       changeTag: true,
       labelWidth: null,
-      tag: 'tinymce',
+      tag: 'rich-text',
       tagIcon: 'rich-text',
       defaultValue: null,
       span: 24,
@@ -148,13 +148,14 @@ export const inputComponents = [
     branding: false // 隐藏右下角品牌烙印
   },
   {
-    type: 'html',
+    type: 'rich-html',
+    htmlEditing: true,
     __config__: {
-      label: 'HTML',
-      showLabel: true,
+      label: '富文本HTML',
+      showLabel: false,
       changeTag: true,
       labelWidth: null,
-      tag: 'section',
+      tag: 'rich-text',
       tagIcon: 'rich-text',
       defaultValue: null,
       span: 24,
@@ -164,6 +165,7 @@ export const inputComponents = [
       document: 'http://tinymce.ax-z.cn'
     },
     placeholder: '请输入',
+    placeholderOrigin: '请编辑富文本内容，然后点击右上角保存',
     height: 300, // 编辑器高度
     branding: false // 隐藏右下角品牌烙印
   }

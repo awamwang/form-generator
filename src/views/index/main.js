@@ -5,11 +5,11 @@ import '@/styles/index.scss'
 import '@/icons'
 import Tinymce from '@/components/tinymce/index.vue'
 
-Vue.component('tinymce', Tinymce)
+Vue.component('richText', Tinymce)
 
 Vue.config.productionTip = false
 
 new Vue({
   router,
-  render: h => h(App)
+  render: (h) => h(App)
 }).$mount('#app')
