@@ -3,9 +3,9 @@
     <div class="left-board">
       <div class="logo-wrapper">
         <div class="logo">
-          <img :src="logo" alt="logo"> Form Generator-Awam
+          <img :src="logo" alt="logo" /> Form Generator-Awam
           <a class="github" href="https://github.com/JakHuang/form-generator" target="_blank">
-            <img src="https://github.githubassets.com/pinned-octocat.svg" alt>
+            <img src="https://github.githubassets.com/pinned-octocat.svg" alt />
           </a>
         </div>
       </div>
@@ -25,12 +25,7 @@
               :sort="false"
               @end="onEnd"
             >
-              <div
-                v-for="(element, index) in item.list"
-                :key="index"
-                class="components-item"
-                @click="addComponent(element)"
-              >
+              <div v-for="(element, index) in item.list" :key="index" class="components-item" @click="addComponent(element)">
                 <div class="components-body">
                   <svg-icon :icon-class="element.__config__.tagIcon" />
                   {{ element.__config__.label }}
@@ -90,32 +85,12 @@
       </el-scrollbar>
     </div>
 
-    <right-panel
-      :active-data="activeData"
-      :form-conf="formConf"
-      :show-field="!!drawingList.length"
-      @tag-change="tagChange"
-    />
+    <right-panel :active-data="activeData" :form-conf="formConf" :show-field="!!drawingList.length" @tag-change="tagChange" />
 
-    <form-drawer
-      :visible.sync="drawerVisible"
-      :form-data="formData"
-      size="100%"
-      :generate-conf="generateConf"
-    />
-    <json-drawer
-      size="60%"
-      :visible.sync="jsonDrawerVisible"
-      :json-str="JSON.stringify(formData)"
-      @refresh="refreshJson"
-    />
-    <code-type-dialog
-      :visible.sync="dialogVisible"
-      title="选择生成类型"
-      :show-file-name="showFileName"
-      @confirm="generate"
-    />
-    <input id="copyNode" type="hidden">
+    <form-drawer :visible.sync="drawerVisible" :form-data="formData" size="100%" :generate-conf="generateConf" />
+    <json-drawer size="60%" :visible.sync="jsonDrawerVisible" :json-str="JSON.stringify(formData)" @refresh="refreshJson" />
+    <code-type-dialog :visible.sync="dialogVisible" title="选择生成类型" :show-file-name="showFileName" @confirm="generate" />
+    <input id="copyNode" type="hidden" />
   </div>
 </template>
 
@@ -128,24 +103,16 @@ import render from '@/components/render/render'
 import FormDrawer from './FormDrawer'
 import JsonDrawer from './JsonDrawer'
 import RightPanel from './RightPanel'
-import {
-  inputComponents, selectComponents, layoutComponents, formConf
-} from '@/components/generator/config'
-import {
-  exportDefault, beautifierConf, isNumberStr, titleCase, deepClone
-} from '@/utils/index'
-import {
-  makeUpHtml, vueTemplate, vueScript, cssStyle
-} from '@/components/generator/html'
+import { inputComponents, selectComponents, layoutComponents, formConf } from '@/components/generator/config'
+import { exportDefault, beautifierConf, isNumberStr, titleCase, deepClone } from '@/utils/index'
+import { makeUpHtml, vueTemplate, vueScript, cssStyle } from '@/components/generator/html'
 import { makeUpJs } from '@/components/generator/js'
 import { makeUpCss } from '@/components/generator/css'
 import drawingDefalut from '@/components/generator/drawingDefalut'
 import logo from '@/assets/logo.png'
 import CodeTypeDialog from './CodeTypeDialog'
 import DraggableItem from './DraggableItem'
-import {
-  getDrawingList, saveDrawingList, getIdGlobal, saveIdGlobal, getFormConf
-} from '@/utils/db'
+import { getDrawingList, saveDrawingList, getIdGlobal, saveIdGlobal, getFormConf } from '@/utils/db'
 import loadBeautifier from '@/utils/loadBeautifier'
 
 let beautifier
@@ -159,12 +126,11 @@ const idGlobal = getIdGlobal()
 export default {
   components: {
     draggable,
-    render,
     FormDrawer,
     JsonDrawer,
     RightPanel,
     CodeTypeDialog,
-    DraggableItem
+    DraggableItem,
   },
   data() {
     return {
@@ -190,29 +156,24 @@ export default {
       leftComponents: [
         {
           title: '输入型组件',
-          list: inputComponents
+          list: inputComponents,
         },
         {
           title: '选择型组件',
-          list: selectComponents
+          list: selectComponents,
         },
         {
           title: '布局型组件',
-          list: layoutComponents
-        }
-      ]
+          list: layoutComponents,
+        },
+      ],
     }
   },
-  computed: {
-  },
+  computed: {},
   watch: {
     // eslint-disable-next-line func-names
     'activeData.__config__.label': function (val, oldVal) {
-      if (
-        this.activeData.placeholder === undefined
-        || !this.activeData.__config__.tag
-        || oldActiveId !== this.activeId
-      ) {
+      if (this.activeData.placeholder === undefined || !this.activeData.__config__.tag || oldActiveId !== this.activeId) {
         return
       }
       this.activeData.placeholder = this.activeData.placeholder.replace(oldVal, '') + val
@@ -221,21 +182,21 @@ export default {
       handler(val) {
         oldActiveId = val
       },
-      immediate: true
+      immediate: true,
     },
     drawingList: {
       handler(val) {
         this.saveDrawingListDebounce(val)
         if (val.length === 0) this.idGlobal = 100
       },
-      deep: true
+      deep: true,
     },
     idGlobal: {
       handler(val) {
         this.saveIdGlobalDebounce(val)
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   mounted() {
     if (Array.isArray(drawingListInDB) && drawingListInDB.length > 0) {
@@ -247,21 +208,21 @@ export default {
     if (formConfInDB) {
       this.formConf = formConfInDB
     }
-    loadBeautifier(btf => {
+    loadBeautifier((btf) => {
       beautifier = btf
     })
     const clipboard = new ClipboardJS('#copyNode', {
-      text: trigger => {
+      text: (trigger) => {
         const codeStr = this.generateCode()
         this.$notify({
           title: '成功',
           message: '代码已复制到剪切板，可粘贴。',
-          type: 'success'
+          type: 'success',
         })
         return codeStr
-      }
+      },
     })
-    clipboard.on('error', e => {
+    clipboard.on('error', (e) => {
       this.$message.error('代码复制失败')
     })
   },
@@ -283,6 +244,10 @@ export default {
     },
     cloneComponent(origin) {
       const clone = deepClone(origin)
+      if (clone.type === 'html') {
+        return this.handlerHtml()
+      }
+
       const config = clone.__config__
       config.span = this.formConf.span // 生成代码时，会根据span做精简判断
       this.createIdAndKey(clone)
@@ -302,14 +267,15 @@ export default {
         delete config.label // rowFormItem无需配置label属性
       }
       if (Array.isArray(config.children)) {
-        config.children = config.children.map(childItem => this.createIdAndKey(childItem))
+        config.children = config.children.map((childItem) => this.createIdAndKey(childItem))
       }
       return item
     },
+    handlerHtml() {},
     AssembleFormData() {
       this.formData = {
         fields: deepClone(this.drawingList),
-        ...this.formConf
+        ...this.formConf,
       }
     },
     generate(data) {
@@ -330,12 +296,10 @@ export default {
       document.getElementById('copyNode').click()
     },
     empty() {
-      this.$confirm('确定要清空所有组件吗？', '提示', { type: 'warning' }).then(
-        () => {
-          this.drawingList = []
-          this.idGlobal = 100
-        }
-      )
+      this.$confirm('确定要清空所有组件吗？', '提示', { type: 'warning' }).then(() => {
+        this.drawingList = []
+        this.idGlobal = 100
+      })
     },
     drawingItemCopy(item, list) {
       let clone = deepClone(item)
@@ -391,7 +355,7 @@ export default {
       if (typeof this.activeData.__config__.defaultValue === typeof config.defaultValue) {
         config.defaultValue = this.activeData.__config__.defaultValue
       }
-      Object.keys(newTag).forEach(key => {
+      Object.keys(newTag).forEach((key) => {
         if (this.activeData[key] !== undefined) {
           newTag[key] = this.activeData[key]
         }
@@ -400,11 +364,11 @@ export default {
       this.updateDrawingList(newTag, this.drawingList)
     },
     updateDrawingList(newTag, list) {
-      const index = list.findIndex(item => item.__config__.formId === this.activeId)
+      const index = list.findIndex((item) => item.__config__.formId === this.activeId)
       if (index > -1) {
         list.splice(index, 1, newTag)
       } else {
-        list.forEach(item => {
+        list.forEach((item) => {
           if (Array.isArray(item.__config__.children)) this.updateDrawingList(newTag, item.__config__.children)
         })
       }
@@ -413,8 +377,8 @@ export default {
       this.drawingList = deepClone(data.fields)
       delete data.fields
       this.formConf = data
-    }
-  }
+    },
+  },
 }
 </script>
 

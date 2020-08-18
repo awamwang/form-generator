@@ -146,6 +146,26 @@ export const inputComponents = [
     placeholder: '请输入',
     height: 300, // 编辑器高度
     branding: false // 隐藏右下角品牌烙印
+  },
+  {
+    type: 'html',
+    __config__: {
+      label: 'HTML',
+      showLabel: true,
+      changeTag: true,
+      labelWidth: null,
+      tag: 'section',
+      tagIcon: 'rich-text',
+      defaultValue: null,
+      span: 24,
+      layout: 'colFormItem',
+      required: true,
+      regList: [],
+      document: 'http://tinymce.ax-z.cn'
+    },
+    placeholder: '请输入',
+    height: 300, // 编辑器高度
+    branding: false // 隐藏右下角品牌烙印
   }
 ]
 
@@ -166,13 +186,16 @@ export const selectComponents = [
       document: 'https://element.eleme.cn/#/zh-CN/component/select'
     },
     __slot__: {
-      options: [{
-        label: '选项一',
-        value: 1
-      }, {
-        label: '选项二',
-        value: 2
-      }]
+      options: [
+        {
+          label: '选项一',
+          value: 1
+        },
+        {
+          label: '选项二',
+          value: 2
+        }
+      ]
     },
     placeholder: '请选择',
     style: { width: '100%' },
@@ -197,16 +220,20 @@ export const selectComponents = [
       changeTag: true,
       document: 'https://element.eleme.cn/#/zh-CN/component/cascader'
     },
-    options: [{
-      id: 1,
-      value: 1,
-      label: '选项1',
-      children: [{
-        id: 2,
-        value: 2,
-        label: '选项1-1'
-      }]
-    }],
+    options: [
+      {
+        id: 1,
+        value: 1,
+        label: '选项1',
+        children: [
+          {
+            id: 2,
+            value: 2,
+            label: '选项1-1'
+          }
+        ]
+      }
+    ],
     placeholder: '请选择',
     style: { width: '100%' },
     props: {
@@ -241,13 +268,16 @@ export const selectComponents = [
       document: 'https://element.eleme.cn/#/zh-CN/component/radio'
     },
     __slot__: {
-      options: [{
-        label: '选项一',
-        value: 1
-      }, {
-        label: '选项二',
-        value: 2
-      }]
+      options: [
+        {
+          label: '选项一',
+          value: 1
+        },
+        {
+          label: '选项二',
+          value: 2
+        }
+      ]
     },
     style: {},
     size: 'medium',
@@ -271,13 +301,16 @@ export const selectComponents = [
       document: 'https://element.eleme.cn/#/zh-CN/component/checkbox'
     },
     __slot__: {
-      options: [{
-        label: '选项一',
-        value: 1
-      }, {
-        label: '选项二',
-        value: 2
-      }]
+      options: [
+        {
+          label: '选项一',
+          value: 1
+        },
+        {
+          label: '选项二',
+          value: 2
+        }
+      ]
     },
     style: {},
     size: 'medium',
@@ -556,62 +589,69 @@ export const layoutComponents = [
       changeTag: true,
       labelWidth: null,
       label: '表格[开发中]',
-      children: [{
-        __config__: {
-          layout: 'raw',
-          tag: 'el-table-column',
-          renderKey: 15957617660153
+      children: [
+        {
+          __config__: {
+            layout: 'raw',
+            tag: 'el-table-column',
+            renderKey: 15957617660153
+          },
+          prop: 'date',
+          label: '日期'
         },
-        prop: 'date',
-        label: '日期'
-      }, {
-        __config__: {
-          layout: 'raw',
-          tag: 'el-table-column',
-          renderKey: 15957617660152
+        {
+          __config__: {
+            layout: 'raw',
+            tag: 'el-table-column',
+            renderKey: 15957617660152
+          },
+          prop: 'address',
+          label: '地址'
         },
-        prop: 'address',
-        label: '地址'
-      }, {
-        __config__: {
-          layout: 'raw',
-          tag: 'el-table-column',
-          renderKey: 15957617660151
+        {
+          __config__: {
+            layout: 'raw',
+            tag: 'el-table-column',
+            renderKey: 15957617660151
+          },
+          prop: 'name',
+          label: '名称'
         },
-        prop: 'name',
-        label: '名称'
-      }, {
-        __config__: {
-          layout: 'raw',
-          tag: 'el-table-column',
-          renderKey: 1595774496335,
-          children: [
-            {
-              __config__: {
-                label: '按钮',
-                tag: 'el-button',
-                tagIcon: 'button',
-                layout: 'raw',
-                renderKey: 1595779809901
-              },
-              __slot__: {
-                default: '主要按钮'
-              },
-              type: 'primary',
-              icon: 'el-icon-search',
-              round: false,
-              size: 'medium'
-            }
-          ]
-        },
-        label: '操作'
-      }]
+        {
+          __config__: {
+            layout: 'raw',
+            tag: 'el-table-column',
+            renderKey: 1595774496335,
+            children: [
+              {
+                __config__: {
+                  label: '按钮',
+                  tag: 'el-button',
+                  tagIcon: 'button',
+                  layout: 'raw',
+                  renderKey: 1595779809901
+                },
+                __slot__: {
+                  default: '主要按钮'
+                },
+                type: 'primary',
+                icon: 'el-icon-search',
+                round: false,
+                size: 'medium'
+              }
+            ]
+          },
+          label: '操作'
+        }
+      ]
     },
-    data: [{
-      date: '2016-05-02',
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄'
-    }],
+    data: [
+      {
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }
+    ],
     border: true,
     type: 'default',
     justify: 'start',
