@@ -106,9 +106,7 @@ const layouts = {
                 event.stopPropagation()
               }}
             >
-              <draggable list={config.children || []} animation={340} group="componentsGroup" class="drag-wrapper">
-                <section domPropsInnerHTML={config.defaultValue} class="drawing-item-rich-text" />
-              </draggable>
+              <section domPropsInnerHTML={config.defaultValue} class="drawing-item-rich-text" />
               {components.itemBtns.apply(this, arguments)}
             </el-row>
           </el-col>

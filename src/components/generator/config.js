@@ -132,7 +132,7 @@ export const inputComponents = [
     __config__: {
       label: '编辑器',
       showLabel: true,
-      changeTag: true,
+      changeTag: false,
       labelWidth: null,
       tag: 'rich-text',
       tagIcon: 'rich-text',
@@ -156,7 +156,7 @@ export const inputComponents = [
       changeTag: true,
       labelWidth: null,
       tag: 'rich-text',
-      tagIcon: 'rich-text',
+      tagIcon: 'rich-text-html',
       defaultValue: null,
       span: 24,
       layout: 'colFormItem',
@@ -198,6 +198,9 @@ export const selectComponents = [
           value: 2
         }
       ]
+    },
+    __data__: {
+      // currentChild
     },
     placeholder: '请选择',
     style: { width: '100%' },
