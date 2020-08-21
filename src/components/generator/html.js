@@ -99,7 +99,7 @@ const layouts = {
       </el-form-item>`
     str = colWrapper(scheme, str)
 
-    if (scheme.type === 'rich-html') {
+    if (scheme.componentType === 'rich-html') {
       return `<section class="drawing-item-rich-text">
         ${config.defaultValue}
       </section>`
