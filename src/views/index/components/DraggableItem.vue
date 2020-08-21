@@ -2,6 +2,26 @@
 import draggable from 'vuedraggable'
 import render from '@/components/render/render'
 
+function computeShowControl(controlItems) {
+  if (!controlItems || !controlItems.length) {
+    return true
+  }
+
+  let item
+
+  for (let i = 0, len = controlItems.length; i < len; i++) {
+    item = controlItems[i]
+
+    if (item.controlItem) {
+      if (item.valueEqual !== undefined && item.controlItem.__config__.defaultValue !== item.valueEqual) {
+        return false
+      }
+    }
+  }
+
+  return true
+}
+
 const components = {
   itemBtns(h, currentItem, index, list) {
     const { copyItem, deleteItem, editHtmlItem, transformHtmlItem } = this.$listeners
@@ -28,7 +48,7 @@ const components = {
       </span>,
     ]
 
-    if (this.currentItem.type === 'rich-html') {
+    if (this.currentItem.componentType === 'rich-html') {
       if (this.currentItem.htmlEditing) {
         btns.unshift([
           <span
@@ -94,7 +114,7 @@ const layouts = {
       </el-col>
     )
 
-    if (currentItem.type === 'rich-html') {
+    if (currentItem.componentType === 'rich-html') {
       if (!currentItem.htmlEditing) {
         return (
           <el-col span={config.span}>
@@ -121,8 +141,35 @@ const layouts = {
   rowFormItem(h, currentItem, index, list) {
     const { activeItem } = this.$listeners
     const config = currentItem.__config__
-    const className = this.activeId === config.formId ? 'drawing-row-item active-from-item' : 'drawing-row-item'
+    let className = this.activeId === config.formId ? 'drawing-row-item active-from-item' : 'drawing-row-item'
     let child = renderChildren.apply(this, arguments)
+
+    if (currentItem.componentType === 'sub-form') {
+      className = this.activeId === config.formId ? 'drawing-sub-form active-from-item' : 'drawing-sub-form'
+      currentItem.show = computeShowControl(currentItem.__config__.controlItems)
+
+      if (currentItem.show) {
+        return (
+          <el-col
+            span={config.span}
+            class={className}
+            nativeOnClick={(event) => {
+              activeItem(currentItem)
+              event.stopPropagation()
+            }}
+          >
+            <span class="component-name">{config.componentName}</span>
+            <draggable list={config.children || []} animation={340} group="componentsGroup" class="drag-wrapper">
+              {child}
+            </draggable>
+            {components.itemBtns.apply(this, arguments)}
+          </el-col>
+        )
+      } else {
+        return ''
+      }
+    }
+
     if (currentItem.type === 'flex') {
       child = (
         <el-row type={currentItem.type} justify={currentItem.justify} align={currentItem.align}>
@@ -188,10 +235,12 @@ export default {
     draggable,
   },
   props: ['currentItem', 'index', 'drawingList', 'activeId', 'formConf'],
+
   render(h) {
     const layout = layouts[this.currentItem.__config__.layout]
 
     if (layout) {
+      console.log('render', this.currentItem.__config__.label)
       return layout.call(this, h, this.currentItem, this.index, this.drawingList)
     }
     return layoutIsNotFound.call(this)

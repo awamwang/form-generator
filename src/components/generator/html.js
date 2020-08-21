@@ -70,6 +70,27 @@ function buildFromBtns(scheme, type) {
   return str
 }
 
+function buildSubForm(scheme, children) {
+  console.log('sch', scheme)
+  let { controlItems } = scheme.__config__
+  let ifConditions = [],
+    item
+
+  for (let i = 0, len = controlItems.length; i < len; i++) {
+    item = controlItems[i]
+
+    if (item.controlItem) {
+      if (item.valueEqual !== undefined) {
+        ifConditions.push(`${item.controlItem.__vModel__} === ${item.valueEqual}`)
+      }
+    }
+  }
+
+  return `<template v-if="${ifConditions.join(' && ')}">
+      ${children.join('\n')}
+    </template>`
+}
+
 // span不为24的用el-col包裹
 function colWrapper(scheme, str) {
   if (someSpanIsNot24 || scheme.__config__.span !== 24) {
@@ -114,6 +135,11 @@ const layouts = {
     const align = scheme.type === 'default' ? '' : `align="${scheme.align}"`
     const gutter = scheme.gutter ? `:gutter="${scheme.gutter}"` : ''
     const children = config.children.map((el) => layouts[el.__config__.layout](el))
+
+    if (scheme.componentType === 'sub-form') {
+      return buildSubForm(scheme, children)
+    }
+
     let str = `<el-row ${type} ${justify} ${align} ${gutter}>
       ${children.join('\n')}
     </el-row>`

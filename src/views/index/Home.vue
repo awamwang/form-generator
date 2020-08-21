@@ -87,7 +87,14 @@
       </el-scrollbar>
     </div>
 
-    <right-panel :active-data="activeData" :form-conf="formConf" :show-field="!!drawingList.length" @tag-change="tagChange" />
+    <right-panel
+      :active-data="activeData"
+      :form-conf="formConf"
+      :drawing-list="drawingList"
+      :sub-form-list="subFormList"
+      :show-field="!!drawingList.length"
+      @tag-change="tagChange"
+    />
 
     <form-drawer :visible.sync="drawerVisible" :form-data="formData" size="100%" :generate-conf="generateConf" />
     <json-drawer size="60%" :visible.sync="jsonDrawerVisible" :json-str="JSON.stringify(formData)" @refresh="refreshJson" />
@@ -110,7 +117,7 @@ import ClipboardJS from 'clipboard'
 import FormDrawer from './FormDrawer'
 import JsonDrawer from './JsonDrawer'
 import RightPanel from './RightPanel'
-import { inputComponents, selectComponents, layoutComponents, formConf } from '@/components/generator/config'
+import { inputComponents, selectComponents, layoutComponents, logicComponents, formConf } from '@/components/generator/config'
 import { exportDefault, beautifierConf, isNumberStr, titleCase, deepClone } from '@/utils/index'
 import { makeUpHtml, vueTemplate, vueScript, cssStyle } from '@/components/generator/html'
 import { makeUpJs } from '@/components/generator/js'
@@ -149,6 +156,7 @@ export default {
       inputComponents,
       selectComponents,
       layoutComponents,
+      logicComponents,
       labelWidth: 100,
       drawingList: drawingDefalut,
       drawingData: {},
@@ -184,7 +192,13 @@ export default {
           title: '布局型组件',
           list: layoutComponents,
         },
+        {
+          title: '逻辑型组件',
+          list: logicComponents,
+        },
       ],
+      // sub-form
+      subFormList: [],
     }
   },
   computed: {},
@@ -285,9 +299,14 @@ export default {
       config.formId = ++this.idGlobal
       config.renderKey = `${config.formId}${+new Date()}` // 改变renderKey后可以实现强制更新组件
       if (config.layout === 'colFormItem') {
-        item.__vModel__ = `field${this.idGlobal}`
+        item.__vModel__ = `field${config.formId}`
       } else if (config.layout === 'rowFormItem') {
-        config.componentName = `row${this.idGlobal}`
+        if (item.componentType === 'sub-form') {
+          this.subFormList.push(item)
+          config.componentName = `sub-form-${config.formId}`
+        } else {
+          config.componentName = `row${config.formId}`
+        }
         !Array.isArray(config.children) && (config.children = [])
         delete config.label // rowFormItem无需配置label属性
       }
@@ -332,6 +351,12 @@ export default {
       this.activeFormItem(clone)
     },
     drawingItemDelete(index, list) {
+      let item = list[index]
+      let subFormIdx = this.subFormList.indexOf(item)
+      if (subFormIdx > -1) {
+        this.subFormList.splice(subFormIdx, 1)
+      }
+
       list.splice(index, 1)
       this.$nextTick(() => {
         const len = this.drawingList.length

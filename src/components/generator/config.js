@@ -148,7 +148,7 @@ export const inputComponents = [
     branding: false // 隐藏右下角品牌烙印
   },
   {
-    type: 'rich-html',
+    componentType: 'rich-html',
     htmlEditing: true,
     __config__: {
       label: '富文本HTML',
@@ -303,7 +303,8 @@ export const selectComponents = [
       regList: [],
       changeTag: true,
       border: false,
-      document: 'https://element.eleme.cn/#/zh-CN/component/checkbox'
+      document: 'https://element.eleme.cn/#/zh-CN/component/checkbox',
+      canHasSubForm: true
     },
     __slot__: {
       options: [
@@ -336,7 +337,8 @@ export const selectComponents = [
       required: true,
       regList: [],
       changeTag: true,
-      document: 'https://element.eleme.cn/#/zh-CN/component/switch'
+      document: 'https://element.eleme.cn/#/zh-CN/component/switch',
+      canHasSubForm: true
     },
     style: {},
     disabled: false,
@@ -345,7 +347,9 @@ export const selectComponents = [
     'active-color': null,
     'inactive-color': null,
     'active-value': true,
-    'inactive-value': false
+    activeValueSubForm: null,
+    'inactive-value': false,
+    inactiveValueSubForm: null
   },
   {
     __config__: {
@@ -661,5 +665,22 @@ export const layoutComponents = [
     type: 'default',
     justify: 'start',
     align: 'top'
+  }
+]
+
+// 逻辑型组件 【左面板】
+export const logicComponents = [
+  {
+    componentType: 'sub-form',
+    __config__: {
+      label: '子表',
+      showLabel: false,
+      changeTag: false,
+      tagIcon: 'sub-form',
+      span: 24,
+      layout: 'rowFormItem',
+      controlItems: []
+    },
+    show: true
   }
 ]

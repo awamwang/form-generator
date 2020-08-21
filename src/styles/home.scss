@@ -224,8 +224,41 @@ $lighterBlue: #409eff;
     padding: 0 6px;
   }
 }
+.drawing-sub-form {
+  position: relative;
+  cursor: move;
+  box-sizing: border-box;
+  border: 1px dashed #ccc;
+  border-radius: 3px;
+  // padding: 0 2px;
+  // .drawing-row-item {
+  //   margin-bottom: 2px;
+  // }
+  .el-col {
+    margin-top: 22px;
+  }
+  .el-form-item {
+    margin-bottom: 0;
+  }
+  .drag-wrapper {
+    min-height: 80px;
+  }
+  &.active-from-item {
+    border: 1px dashed $lighterBlue;
+  }
+  .component-name {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 12px;
+    color: #bbb;
+    display: inline-block;
+    padding: 0 6px;
+  }
+}
 .drawing-item,
-.drawing-row-item {
+.drawing-row-item,
+.drawing-sub-form {
   &:hover {
     & > .el-form-item {
       background: $selectedColor;
