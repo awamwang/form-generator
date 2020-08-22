@@ -4,6 +4,7 @@ node_modules
 /src/components/parser/lib
 /src/components/render/lib
 /src/components/tinymce/lib
+/test/views/
 
 # local env files
 .env.local

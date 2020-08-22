@@ -1,25 +1,38 @@
 const path = require('path')
 
-const minify = process.env.NODE_ENV === 'development' ? false : {
-  collapseWhitespace: true,
-  removeComments: true,
-  removeRedundantAttributes: true,
-  removeScriptTypeAttributes: true,
-  removeStyleLinkTypeAttributes: true,
-  useShortDoctype: true,
-  minifyCSS: true,
-  minifyJS: true
-}
+const minify =
+  process.env.NODE_ENV === 'development'
+    ? false
+    : {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true,
+        minifyCSS: true,
+        minifyJS: true
+      }
 
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/form-generator/'
-    : '/',
-  pages: {
+const mainProject = process.env.PROJECT === void 0 || process.env.PROJECT === 'main'
+const testProject = process.env.PROJECT === 'test'
+let pages
+if (testProject) {
+  pages = {
+    index: {
+      entry: 'test/main.js',
+      template: 'public/index.html',
+      filename: 'index.html',
+      chunks: ['chunk-vendors', 'chunk-common', 'index'],
+      minify
+    }
+  }
+} else {
+  pages = {
     index: {
       entry: 'src/views/index/main.js',
       template: 'public/index.html',
@@ -34,7 +47,12 @@ module.exports = {
       chunks: ['chunk-vendors', 'chunk-common', 'preview'],
       minify
     }
-  },
+  }
+}
+
+module.exports = {
+  publicPath: process.env.NODE_ENV === 'production' ? '/form-generator/' : '/',
+  pages,
   devServer: {
     overlay: false
   },

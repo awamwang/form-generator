@@ -71,7 +71,6 @@ function buildFromBtns(scheme, type) {
 }
 
 function buildSubForm(scheme, children) {
-  console.log('sch', scheme)
   let { controlItems } = scheme.__config__
   let ifConditions = [],
     item
@@ -81,7 +80,7 @@ function buildSubForm(scheme, children) {
 
     if (item.controlItem) {
       if (item.valueEqual !== undefined) {
-        ifConditions.push(`${item.controlItem.__vModel__} === ${item.valueEqual}`)
+        ifConditions.push(`formData.${item.controlItem.__vModel__} === ${item.valueEqual}`)
       }
     }
   }

@@ -57,7 +57,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     quotes: [1, 'single', { allowTemplateLiterals: true }],
     semi: [1, 'never'],
-    'linebreak-style': [1, 'windows'],
+    'linebreak-style': [0, 'windows'],
     'no-unused-vars': [0]
     // 'comma-dangle': [1, 'always'],
   }
